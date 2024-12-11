@@ -1,0 +1,109 @@
+$('.section-question, .section-result, .the-end').css('display', 'none')
+const user = {
+  name: '',
+  officePost: '',
+  email: '',
+}
+
+let gender
+
+const testAnswers = []
+const personalityStats = {}
+let currentPersonality
+
+$('.select-btn').click(function () {
+  const slideIndex = $(this).data('slide-index')
+
+  if (currentPersonality) {
+    testAnswers[+slideIndex] = currentPersonality
+  }
+  currentPersonality = ''
+});
+
+$('.answer-btn').click(function () {
+  const mostCommon = countPersonalityStats().toLowerCase();
+
+  $(`.section_${mostCommon}`).css('display', 'block')
+  $(`.section_${mostCommon}`)[0].scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  })
+  $('.the-end').css('display', 'block')
+});
+
+
+$('.answer').click(function (event) {
+  event.preventDefault()
+  currentPersonality = $(this).data('personality')
+})
+
+function countPersonalityStats() {
+  testAnswers.forEach(answer => {
+    answer.split(', ').forEach((ans) => {
+      if (ans in personalityStats) {
+        personalityStats[ans]++;
+      } else {
+        personalityStats[ans] = 1;
+      }
+    });
+  });
+
+  let maxCount = 0;
+  let mostCommonPersonality = null;
+
+  for (const [personality, count] of Object.entries(personalityStats)) {
+    if (count > maxCount) {
+      maxCount = count;
+      mostCommonPersonality = personality;
+    }
+  }
+
+  return mostCommonPersonality
+}
+
+$('.gender-btn').click(function () {
+  gender = $(this).data('gender')
+})
+
+// $('.choose-gender-btn').click(() => {
+//   $(`.section_${gender}`).css('display', 'block')
+//   $(`#question-${gender}-start`)[0].scrollIntoView({
+//     behavior: 'smooth',
+//     block: 'start'
+//   })
+// })
+
+// $('.start-again').click(function () {
+//   $('.section-question:not(.section__gender), .section-result').css('display', 'none')
+//   gender = ''
+//   testAnswers = [];
+//   personalityStats = {};
+//   currentPersonality = '';
+// })
+
+$('.buttons-2').click(function (event) {
+  let clickedBtn;
+  if (event.target.classList.contains('btn-1')) {
+    clickedBtn = event.target
+  }
+  if ($(event.target).parent()[0].classList.contains('btn-1')) {
+    clickedBtn = $(event.target).parent()[0]
+  }
+  if (!clickedBtn) return
+
+  $(this).find('.btn-1').find('.button-bg-gold').removeClass('active-gold-bg')
+  $(this).find('.btn-1').find('.button-text-1').removeClass('active-text-color')
+
+  $(clickedBtn).find('.button-bg-gold').addClass('active-gold-bg')
+  $(clickedBtn).find('.button-text-1').addClass('active-text-color')
+})
+
+// $('.success-btn').click(() => {
+//   $('#start-test').css('display', 'block')
+//   $('#start-test')[0].scrollIntoView({
+//     behavior: 'smooth',
+//     block: 'start'
+//   })
+// })
+
+
